@@ -2,7 +2,7 @@
   "name": "chiller-plant-ai-optimization",
   "private": true,
   "version": "1.0.0",
-  "description": "Disney Chiller Plant AI Optimization - Real-time optimization for chillers, cooling towers, and pumps",
+  "description": "Chiller Plant AI Optimization - Real-time optimization for chillers, cooling towers, and pumps",
   "type": "module",
   "scripts": {
     "dev": "vite",

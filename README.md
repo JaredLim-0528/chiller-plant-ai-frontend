@@ -1,6 +1,6 @@
-# Disney Chiller Plant AI Optimization
+# Chiller Plant AI Optimization
 
-A real-time AI-powered optimization system for Disney's chiller plant operations, featuring intelligent monitoring and control of chillers, cooling towers, and pumps.
+A real-time AI-powered optimization system for chiller plant operations, featuring intelligent monitoring and control of chillers, cooling towers, and pumps.
 
 ## Features
 
@@ -13,7 +13,7 @@ A real-time AI-powered optimization system for Disney's chiller plant operations
 ## Tech Stack
 
 - **Frontend**: React 18 + TypeScript
-- **Styling**: Tailwind CSS with Disney-themed dark mode
+- **Styling**: Tailwind CSS with modern dark theme
 - **Charts**: Chart.js with React wrapper
 - **Build Tool**: Vite
 - **Icons**: Lucide React
@@ -93,7 +93,7 @@ src/
 
 ## Theme
 
-The application uses Disney's signature dark theme with:
+The application uses a modern dark theme with:
 - Dark gray background gradients
 - Blue, emerald, amber, and purple accent colors
 - Modern card-based layout
@@ -101,4 +101,4 @@ The application uses Disney's signature dark theme with:
 
 ## License
 
-Copyright Disney. All rights reserved. 
+Copyright © 2024. All rights reserved. 

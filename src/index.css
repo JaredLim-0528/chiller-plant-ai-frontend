@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global dark background matching Disney theme */
+/* Global dark background matching modern theme */
 html, body {
   background: linear-gradient(135deg, #030712 0%, #030712 50%, #111827 100%);
   min-height: 100vh;
