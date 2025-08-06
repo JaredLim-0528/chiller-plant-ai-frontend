@@ -1,5 +1,5 @@
 import React from 'react';
-import { Brain, Activity, Calendar } from 'lucide-react';
+import { Brain, Activity, Calendar, Thermometer, Droplets } from 'lucide-react';
 import { CoolingLoadProfile } from './components/CoolingLoadProfile';
 import { ChillersOptimization } from './components/ChillersOptimization';
 import { CoolingTowersOptimization } from './components/CoolingTowersOptimization';
@@ -33,23 +33,27 @@ function App() {
 
         {/* Status Bar */}
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg p-4 mb-8 border border-gray-700">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
+          <div className="flex items-baseline justify-between">
+            <div className="flex items-baseline">
               <Activity className="w-5 h-5 text-emerald-400 mr-2" />
               <span className="text-emerald-400 font-medium">System Online</span>
+              <span className="text-gray-400 text-sm ml-2">(Last heartbeat received 35min ago)</span>
             </div>
             <div className="flex items-center space-x-6 text-sm">
               <div className="flex items-center">
-                <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2"></div>
-                <span className="text-gray-300">AI Optimization Active</span>
+                <Thermometer className="w-4 h-4 text-orange-400 mr-1" />
+                <span className="text-gray-300">Dry Bulb:</span>
+                <span className="text-white font-medium ml-1">32.5°C</span>
               </div>
               <div className="flex items-center">
-                <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                <span className="text-gray-300">Real-time Monitoring</span>
+                <Thermometer className="w-4 h-4 text-blue-400 mr-1" />
+                <span className="text-gray-300">Wet Bulb:</span>
+                <span className="text-white font-medium ml-1">28.2°C</span>
               </div>
               <div className="flex items-center">
-                <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
-                <span className="text-gray-300">Predictive Analytics</span>
+                <Droplets className="w-4 h-4 text-cyan-400 mr-1" />
+                <span className="text-gray-300">Humidity:</span>
+                <span className="text-white font-medium ml-1">65%</span>
               </div>
             </div>
           </div>

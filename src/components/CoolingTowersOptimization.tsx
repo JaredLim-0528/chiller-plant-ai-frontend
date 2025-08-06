@@ -9,9 +9,8 @@ interface CoolingTowersOptimizationProps {
 export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps> = ({ coolingTowers }) => {
   // Setpoint state management
   const [setpoints, setSetpoints] = useState({
-    currentApproachingTemp: 8.2,     // Display-only current status
-    targetApproachingTemp: 7.5,      // User input
-    aiRecommendedApproachingTemp: 7.0, // AI recommendation
+    currentCondensingWaterReturnTemp: 28.2,     // Display-only current status
+    aiRecommendedCondensingWaterReturnTemp: 27.0, // AI recommendation
     controlMode: 'auto' as 'auto' | 'manual'
   });
 
@@ -35,7 +34,7 @@ export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps>
   const handleApplyStrategy = () => {
     setAppliedStrategyControlMode(strategyControlMode);
     
-    // If Auto Optimization is selected, force user selection to match AI recommendation
+    // If AI Control is selected, force user selection to match AI recommendation
     if (strategyControlMode === 'auto') {
       setStrategy(prev => ({
         ...prev,
@@ -50,14 +49,6 @@ export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps>
   // Handle apply setpoints
   const handleApplySetpoints = () => {
     setAppliedSetpointControlMode(setpoints.controlMode);
-    
-    // If Auto Optimization is selected, force target to match AI recommendation
-    if (setpoints.controlMode === 'auto') {
-      setSetpoints(prev => ({
-        ...prev,
-        targetApproachingTemp: prev.aiRecommendedApproachingTemp
-      }));
-    }
     
     setSetpointsCommandSent(true);
     setTimeout(() => setSetpointsCommandSent(false), 3000);
@@ -86,7 +77,7 @@ export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps>
                 ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-700/30' 
                 : 'bg-gray-900/30 text-gray-400 border border-gray-700/30'
             }`}>
-              {appliedStrategyControlMode === 'auto' ? 'Auto' : 'Manual'}
+              {appliedStrategyControlMode === 'auto' ? 'AI Mode' : 'BMS Mode'}
             </div>
           </div>
 
@@ -99,7 +90,7 @@ export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">Number of Towers Running</span>
                   <div className="flex items-center">
-                    <span className="bg-gray-700 border border-gray-600 px-4 py-2 text-white text-lg font-bold rounded min-w-[60px] text-center">
+                    <span className="text-white text-lg font-bold">
                       {strategy.currentTowersRunning}
                     </span>
                   </div>
@@ -108,48 +99,14 @@ export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps>
 
               {/* Target Configuration with AI Recommendation */}
               <div className="bg-gradient-to-br from-cyan-900/30 to-cyan-800/20 rounded-lg p-4 border border-cyan-700/30">
-                
-                {/* User Input Row */}
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-gray-300">Number of Towers to Run</span>
-                  <div className="flex items-center">
-                    <button 
-                      onClick={() => setStrategy(prev => ({ ...prev, userSelectedTowers: Math.max(0, prev.userSelectedTowers - 1) }))}
-                      className="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded-l border border-gray-600 flex items-center justify-center"
-                    >
-                      -
-                    </button>
-                    <span className="bg-gray-700 border-t border-b border-gray-600 px-4 py-2 text-white text-lg font-bold min-w-[60px] text-center">
-                      {strategy.userSelectedTowers}
-                    </span>
-                    <button 
-                      onClick={() => setStrategy(prev => ({ ...prev, userSelectedTowers: Math.min(coolingTowers.length, prev.userSelectedTowers + 1) }))}
-                      className="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded-r border border-gray-600 flex items-center justify-center"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
 
                 {/* AI Recommendation Row */}
-                <div className="flex items-center justify-between pt-3 border-t border-cyan-700/30">
+                <div className="flex items-center justify-between">
                   <span className="text-gray-300">AI Recommended Number of Towers</span>
                   <div className="flex items-center">
                     <span className="bg-emerald-900 border border-emerald-700 px-4 py-2 text-emerald-300 text-lg font-bold rounded">
                       {strategy.aiRecommendedTowers}
                     </span>
-                    <div className="ml-3">
-                      {strategy.userSelectedTowers === strategy.aiRecommendedTowers ? (
-                        <span className="text-emerald-400 text-sm flex items-center">
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Optimal
-                        </span>
-                      ) : strategy.userSelectedTowers < strategy.aiRecommendedTowers ? (
-                        <span className="text-amber-400 text-sm">↑ Add {strategy.aiRecommendedTowers - strategy.userSelectedTowers}</span>
-                      ) : (
-                        <span className="text-amber-400 text-sm">↓ Remove {strategy.userSelectedTowers - strategy.aiRecommendedTowers}</span>
-                      )}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -170,7 +127,7 @@ export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps>
                   onChange={() => setStrategyControlMode('auto')}
                   className="mr-2"
                 />
-                <span className="text-gray-300">Auto Optimization</span>
+                <span className="text-gray-300">AI Control</span>
               </label>
               <label className="flex items-center">
                 <input
@@ -179,7 +136,7 @@ export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps>
                   onChange={() => setStrategyControlMode('manual')}
                   className="mr-2"
                 />
-                <span className="text-gray-300">Manual Control</span>
+                <span className="text-gray-300">BMS Control</span>
               </label>
             </div>
           </div>
@@ -217,7 +174,7 @@ export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps>
                 ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-700/30' 
                 : 'bg-gray-900/30 text-gray-400 border border-gray-700/30'
             }`}>
-              {appliedSetpointControlMode === 'auto' ? 'Auto' : 'Manual'}
+              {appliedSetpointControlMode === 'auto' ? 'AI Mode' : 'BMS Mode'}
             </div>
           </div>
 
@@ -228,66 +185,31 @@ export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps>
               Cooling Tower Setpoints
             </h4>
             
-            <div className="space-y-4">
-              {/* Current Approaching Temperature (Display Only) */}
+            <div className="space-y-6">
+              {/* Current Condensing Water Return Temp Status (Display Only) */}
               <div className="bg-gradient-to-br from-gray-900/30 to-gray-800/20 rounded-lg p-4 border border-gray-700/30">
+                <h4 className="text-lg font-medium text-gray-300 mb-3">Current Status</h4>
                 <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-sm text-gray-300 font-medium">Current Approaching Temperature</span>
-                    <p className="text-xs text-gray-400 mt-1">Current performance status</p>
-                  </div>
+                  <span className="text-gray-300">Current Condensing Water Return Temp</span>
                   <div className="flex items-center">
-                    <span className="bg-gray-700 border border-gray-600 px-3 py-2 text-white text-lg font-bold rounded">
-                      {setpoints.currentApproachingTemp.toFixed(1)}
+                    <span className="text-white text-lg font-bold">
+                      {setpoints.currentCondensingWaterReturnTemp.toFixed(1)}
                     </span>
                     <span className="text-gray-300 ml-2 text-sm">°C</span>
                   </div>
                 </div>
               </div>
 
-              {/* Target Approaching Temperature with AI Recommendation */}
+              {/* AI Recommendation */}
               <div className="bg-gradient-to-br from-cyan-900/30 to-cyan-800/20 rounded-lg p-4 border border-cyan-700/30">
-                
-                {/* User Input Row */}
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-gray-300">Target Approaching Temperature</span>
-                  <div className="flex items-center">
-                    <input
-                      type="number"
-                      value={setpoints.targetApproachingTemp}
-                      onChange={(e) => setSetpoints(prev => ({
-                        ...prev,
-                        targetApproachingTemp: parseFloat(e.target.value)
-                      }))}
-                      className="w-20 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-lg font-bold"
-                      step="0.1"
-                      min="3.0"
-                      max="15.0"
-                    />
-                    <span className="text-cyan-300 ml-2 text-sm">°C</span>
-                  </div>
-                </div>
-
                 {/* AI Recommendation Row */}
-                <div className="flex items-center justify-between pt-3 border-t border-cyan-700/30">
-                  <span className="text-gray-300">AI Recommended Approaching Temp</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">AI Recommended Condensing Water Return Temp</span>
                   <div className="flex items-center">
-                    <span className="bg-emerald-900 border border-emerald-700 px-3 py-2 text-emerald-300 text-lg font-bold rounded">
-                      {setpoints.aiRecommendedApproachingTemp.toFixed(1)}
+                    <span className="bg-emerald-900 border border-emerald-700 px-4 py-2 text-emerald-300 text-lg font-bold rounded">
+                      {setpoints.aiRecommendedCondensingWaterReturnTemp.toFixed(1)}
                     </span>
                     <span className="text-emerald-300 ml-2 text-sm">°C</span>
-                    <div className="ml-3">
-                      {setpoints.targetApproachingTemp === setpoints.aiRecommendedApproachingTemp ? (
-                        <span className="text-emerald-400 text-sm flex items-center">
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Optimal
-                        </span>
-                      ) : setpoints.targetApproachingTemp > setpoints.aiRecommendedApproachingTemp ? (
-                        <span className="text-amber-400 text-sm">↓ Reduce by {(setpoints.targetApproachingTemp - setpoints.aiRecommendedApproachingTemp).toFixed(1)}°C</span>
-                      ) : (
-                        <span className="text-amber-400 text-sm">↑ Increase by {(setpoints.aiRecommendedApproachingTemp - setpoints.targetApproachingTemp).toFixed(1)}°C</span>
-                      )}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -308,7 +230,7 @@ export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps>
                   onChange={() => setSetpoints(prev => ({ ...prev, controlMode: 'auto' }))}
                   className="mr-2"
                 />
-                <span className="text-gray-300">Auto Optimization</span>
+                <span className="text-gray-300">AI Control</span>
               </label>
               <label className="flex items-center">
                 <input
@@ -317,7 +239,7 @@ export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps>
                   onChange={() => setSetpoints(prev => ({ ...prev, controlMode: 'manual' }))}
                   className="mr-2"
                 />
-                <span className="text-gray-300">Manual Control</span>
+                <span className="text-gray-300">BMS Control</span>
               </label>
             </div>
           </div>

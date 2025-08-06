@@ -9,7 +9,7 @@ interface ChillersOptimizationProps {
 export const ChillersOptimization: React.FC<ChillersOptimizationProps> = ({ chillers }) => {
   // Setpoint state management
   const [setpoints, setSetpoints] = useState({
-    chilledWaterSupplySetpoint: 6.0,
+    chilledWaterSupplySetpoint: 7.2,
     targetChilledWaterReturn: 12.0,
     chilledWaterSupplyControlMode: 'auto' as 'auto' | 'manual'
   });
@@ -194,7 +194,7 @@ export const ChillersOptimization: React.FC<ChillersOptimizationProps> = ({ chil
                 ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-700/30' 
                 : 'bg-gray-900/30 text-gray-400 border border-gray-700/30'
             }`}>
-              {appliedStrategyControlMode === 'auto' ? 'Auto' : 'Manual'}
+              {appliedStrategyControlMode === 'auto' ? 'AI Mode' : 'BMS Mode'}
             </div>
           </div>
 
@@ -238,7 +238,7 @@ export const ChillersOptimization: React.FC<ChillersOptimizationProps> = ({ chil
                   onChange={() => setStrategyControlMode('auto')}
                   className="mr-2"
                 />
-                <span className="text-gray-300">Auto Optimization</span>
+                <span className="text-gray-300">AI Control</span>
               </label>
               <label className="flex items-center">
                 <input
@@ -247,7 +247,7 @@ export const ChillersOptimization: React.FC<ChillersOptimizationProps> = ({ chil
                   onChange={() => setStrategyControlMode('manual')}
                   className="mr-2"
                 />
-                <span className="text-gray-300">Manual Control</span>
+                <span className="text-gray-300">BMS Control</span>
               </label>
             </div>
           </div>
@@ -311,17 +311,12 @@ export const ChillersOptimization: React.FC<ChillersOptimizationProps> = ({ chil
               <Target className="w-6 h-6 text-purple-400 mr-3" />
               <h3 className="text-xl font-semibold text-white">Setpoint Optimization</h3>
             </div>
-            <div className="flex gap-2">
-              <div className="px-2 py-1 rounded-full text-xs font-medium bg-gray-900/30 text-gray-400 border border-gray-700/30">
-                Return: Manual Only
-              </div>
-              <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                appliedChilledWaterSupplyControlMode === 'auto' 
-                  ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-700/30' 
-                  : 'bg-gray-900/30 text-gray-400 border border-gray-700/30'
-              }`}>
-                Supply: {appliedChilledWaterSupplyControlMode === 'auto' ? 'Auto' : 'Manual'}
-              </div>
+            <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+              appliedChilledWaterSupplyControlMode === 'auto' 
+                ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-700/30' 
+                : 'bg-gray-900/30 text-gray-400 border border-gray-700/30'
+            }`}>
+              {appliedChilledWaterSupplyControlMode === 'auto' ? 'AI Mode' : 'BMS Mode'}
             </div>
           </div>
 
@@ -332,97 +327,64 @@ export const ChillersOptimization: React.FC<ChillersOptimizationProps> = ({ chil
               Water Temperature Setpoints
             </h4>
             
-            <div className="space-y-4">
-              {/* Chilled Water Return Temperature Row */}
-              <div className="bg-gradient-to-br from-cyan-900/20 to-cyan-800/10 rounded-lg p-4 border border-cyan-700/30">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-xs text-gray-400 mb-2">Current Chilled Water Return Temp</p>
-                    <div className="flex items-center">
-                      <span className="text-xl font-bold text-emerald-300">{currentTemps.chilledWaterReturnCurrent.toFixed(1)}</span>
-                      <span className="text-blue-300 ml-2 text-sm">°C</span>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400 mb-2">Target Chilled Water Return Temp</p>
-                    <div className="flex items-center">
-                      <input
-                        type="number"
-                        value={setpoints.targetChilledWaterReturn}
-                        onChange={(e) => setSetpoints(prev => ({
-                          ...prev,
-                          targetChilledWaterReturn: parseFloat(e.target.value)
-                        }))}
-                        className="w-20 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-lg font-bold"
-                        step="0.1"
-                      />
-                      <span className="text-blue-300 ml-2 text-sm">°C</span>
-                      <span className="text-xs text-gray-400 bg-gray-800/50 px-2 py-1 rounded border border-gray-600 ml-3">Manual Only</span>
-                    </div>
+            <div className="space-y-6">
+              {/* Current Chilled Water Supply Temperature Status (Display Only) */}
+              <div className="bg-gradient-to-br from-gray-900/30 to-gray-800/20 rounded-lg p-4 border border-gray-700/30">
+                <h4 className="text-lg font-medium text-gray-300 mb-3">Current Status</h4>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">Current Chilled Water Supply Temp</span>
+                  <div className="flex items-center">
+                    <span className="text-white text-lg font-bold">
+                      {currentTemps.chilledWaterSupplyCurrent.toFixed(1)}
+                    </span>
+                    <span className="text-gray-300 ml-2 text-sm">°C</span>
                   </div>
                 </div>
-
               </div>
 
-              {/* Chilled Water Supply Temperature Row */}
-              <div className="bg-gradient-to-br from-purple-900/20 to-purple-800/10 rounded-lg p-4 border border-purple-700/30">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-xs text-gray-400 mb-2">Current Chilled Water Supply Temp</p>
-                    <div className="flex items-center">
-                      <span className="text-xl font-bold text-emerald-300">{currentTemps.chilledWaterSupplyCurrent.toFixed(1)}</span>
-                      <span className="text-blue-300 ml-2 text-sm">°C</span>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400 mb-2">Chilled Water Supply Temp Setpoint</p>
-                    <div className="flex items-center">
-                      <input
-                        type="number"
-                        value={setpoints.chilledWaterSupplySetpoint}
-                        onChange={(e) => setSetpoints(prev => ({
-                          ...prev,
-                          chilledWaterSupplySetpoint: parseFloat(e.target.value)
-                        }))}
-                        className="w-20 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-lg font-bold"
-                        step="0.1"
-                      />
-                      <span className="text-blue-300 ml-2 text-sm">°C</span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Control Mode for Supply Temperature */}
-                <div className="border-t border-purple-700/30 pt-3">
-                  <p className="text-xs text-purple-300 font-medium mb-2">Control Mode</p>
-                  <div className="flex gap-4">
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        checked={setpoints.chilledWaterSupplyControlMode === 'auto'}
-                        onChange={() => setSetpoints(prev => ({ ...prev, chilledWaterSupplyControlMode: 'auto' }))}
-                        className="mr-2"
-                      />
-                      <span className="text-gray-300 text-sm">Auto Optimization</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        checked={setpoints.chilledWaterSupplyControlMode === 'manual'}
-                        onChange={() => setSetpoints(prev => ({ ...prev, chilledWaterSupplyControlMode: 'manual' }))}
-                        className="mr-2"
-                      />
-                      <span className="text-gray-300 text-sm">Manual Control</span>
-                    </label>
+              {/* AI Recommendation */}
+              <div className="bg-gradient-to-br from-cyan-900/30 to-cyan-800/20 rounded-lg p-4 border border-cyan-700/30">
+                {/* AI Recommendation Row */}
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">AI Recommended CHWS Temp Setpoint</span>
+                  <div className="flex items-center">
+                    <span className="bg-emerald-900 border border-emerald-700 px-4 py-2 text-emerald-300 text-lg font-bold rounded">
+                      {setpoints.chilledWaterSupplySetpoint.toFixed(1)}
+                    </span>
+                    <span className="text-emerald-300 ml-2 text-sm">°C</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-
-
-
+          {/* Control Mode */}
+          <div className="mb-6">
+            <h4 className="text-lg font-medium text-white flex items-center mb-3">
+              <Settings className="w-5 h-5 text-emerald-400 mr-2" />
+              Control Mode
+            </h4>
+            <div className="flex gap-6">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  checked={setpoints.chilledWaterSupplyControlMode === 'auto'}
+                  onChange={() => setSetpoints(prev => ({ ...prev, chilledWaterSupplyControlMode: 'auto' }))}
+                  className="mr-2"
+                />
+                <span className="text-gray-300">AI Control</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  checked={setpoints.chilledWaterSupplyControlMode === 'manual'}
+                  onChange={() => setSetpoints(prev => ({ ...prev, chilledWaterSupplyControlMode: 'manual' }))}
+                  className="mr-2"
+                />
+                <span className="text-gray-300">BMS Control</span>
+              </label>
+            </div>
+          </div>
 
           {/* Command Sent Feedback */}
           {setpointsCommandSent && (

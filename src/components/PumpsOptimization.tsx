@@ -9,9 +9,14 @@ interface PumpsOptimizationProps {
 export const PumpsOptimization: React.FC<PumpsOptimizationProps> = ({ pumps }) => {
   // Setpoint state management
   const [setpoints, setSetpoints] = useState({
-    primaryPumpSpeed: 85,
-    secondaryPumpSpeed: 80,
-    pressureSetpoint: 45,
+    // Current values (display-only)
+    currentPrimaryPumpSpeed: 82,
+    currentSecondaryPumpSpeed: 78,
+    currentPressureSetpoint: 290, // ~42 psi converted to kPa
+    // AI recommendations
+    aiRecommendedPrimaryPumpSpeed: 85,
+    aiRecommendedSecondaryPumpSpeed: 80,
+    aiRecommendedPressureSetpoint: 310, // ~45 psi converted to kPa
     controlMode: 'auto' as 'auto' | 'manual'
   });
 
@@ -84,7 +89,7 @@ export const PumpsOptimization: React.FC<PumpsOptimizationProps> = ({ pumps }) =
                 ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-700/30' 
                 : 'bg-gray-900/30 text-gray-400 border border-gray-700/30'
             }`}>
-              {appliedStrategyControlMode === 'auto' ? 'Auto' : 'Manual'}
+              {appliedStrategyControlMode === 'auto' ? 'AI Mode' : 'BMS Mode'}
             </div>
           </div>
 
@@ -131,7 +136,7 @@ export const PumpsOptimization: React.FC<PumpsOptimizationProps> = ({ pumps }) =
                   onChange={() => setStrategyControlMode('auto')}
                   className="mr-2"
                 />
-                <span className="text-gray-300">Auto Optimization</span>
+                <span className="text-gray-300">AI Control</span>
               </label>
               <label className="flex items-center">
                 <input
@@ -140,7 +145,7 @@ export const PumpsOptimization: React.FC<PumpsOptimizationProps> = ({ pumps }) =
                   onChange={() => setStrategyControlMode('manual')}
                   className="mr-2"
                 />
-                <span className="text-gray-300">Manual Control</span>
+                <span className="text-gray-300">BMS Control</span>
               </label>
             </div>
           </div>
@@ -178,7 +183,7 @@ export const PumpsOptimization: React.FC<PumpsOptimizationProps> = ({ pumps }) =
                 ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-700/30' 
                 : 'bg-gray-900/30 text-gray-400 border border-gray-700/30'
             }`}>
-              {appliedSetpointControlMode === 'auto' ? 'Auto' : 'Manual'}
+              {appliedSetpointControlMode === 'auto' ? 'AI Mode' : 'BMS Mode'}
             </div>
           </div>
 
@@ -189,62 +194,81 @@ export const PumpsOptimization: React.FC<PumpsOptimizationProps> = ({ pumps }) =
               Pump Setpoints
             </h4>
             
-            <div className="space-y-4">
-              {/* Primary Pump Speed */}
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-300">Primary Pump Speed</span>
-                <div className="flex items-center">
-                  <input
-                    type="number"
-                    value={setpoints.primaryPumpSpeed}
-                    onChange={(e) => setSetpoints(prev => ({
-                      ...prev,
-                      primaryPumpSpeed: parseFloat(e.target.value)
-                    }))}
-                    className="w-20 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-lg font-bold"
-                    step="1"
-                    min="0"
-                    max="100"
-                  />
-                  <span className="text-indigo-300 ml-2 text-sm">%</span>
+            <div className="space-y-6">
+              {/* Current Status */}
+              <div className="bg-gradient-to-br from-gray-900/30 to-gray-800/20 rounded-lg p-4 border border-gray-700/30">
+                <h4 className="text-lg font-medium text-gray-300 mb-3">Current Status</h4>
+                <div className="space-y-3">
+                  {/* Primary Pump Speed */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Primary Pump Speed</span>
+                    <div className="flex items-center">
+                      <span className="text-white text-lg font-bold">
+                        {setpoints.currentPrimaryPumpSpeed}
+                      </span>
+                      <span className="text-gray-300 ml-2 text-sm">%</span>
+                    </div>
+                  </div>
+                  
+                  {/* Secondary Pump Speed */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Secondary Pump Speed</span>
+                    <div className="flex items-center">
+                      <span className="text-white text-lg font-bold">
+                        {setpoints.currentSecondaryPumpSpeed}
+                      </span>
+                      <span className="text-gray-300 ml-2 text-sm">%</span>
+                    </div>
+                  </div>
+                  
+                  {/* Pressure Setpoint */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Current Pressure Setpoint</span>
+                    <div className="flex items-center">
+                      <span className="text-white text-lg font-bold">
+                        {setpoints.currentPressureSetpoint}
+                      </span>
+                      <span className="text-gray-300 ml-2 text-sm">kPa</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Secondary Pump Speed */}
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-300">Secondary Pump Speed</span>
-                <div className="flex items-center">
-                  <input
-                    type="number"
-                    value={setpoints.secondaryPumpSpeed}
-                    onChange={(e) => setSetpoints(prev => ({
-                      ...prev,
-                      secondaryPumpSpeed: parseFloat(e.target.value)
-                    }))}
-                    className="w-20 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-lg font-bold"
-                    step="1"
-                    min="0"
-                    max="100"
-                  />
-                  <span className="text-indigo-300 ml-2 text-sm">%</span>
-                </div>
-              </div>
-
-              {/* Pressure Setpoint */}
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-300">Pressure Setpoint</span>
-                <div className="flex items-center">
-                  <input
-                    type="number"
-                    value={setpoints.pressureSetpoint}
-                    onChange={(e) => setSetpoints(prev => ({
-                      ...prev,
-                      pressureSetpoint: parseFloat(e.target.value)
-                    }))}
-                    className="w-20 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-lg font-bold"
-                    step="1"
-                  />
-                  <span className="text-indigo-300 ml-2 text-sm">psi</span>
+              {/* AI Recommendations */}
+              <div className="bg-gradient-to-br from-cyan-900/30 to-cyan-800/20 rounded-lg p-4 border border-cyan-700/30">
+                <div className="space-y-3">
+                  {/* AI Recommended Primary Pump Speed */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">AI Recommended Primary Pump Speed</span>
+                    <div className="flex items-center">
+                      <span className="bg-emerald-900 border border-emerald-700 px-4 py-2 text-emerald-300 text-lg font-bold rounded">
+                        {setpoints.aiRecommendedPrimaryPumpSpeed}
+                      </span>
+                      <span className="text-emerald-300 ml-2 text-sm">%</span>
+                    </div>
+                  </div>
+                  
+                  {/* AI Recommended Secondary Pump Speed */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">AI Recommended Secondary Pump Speed</span>
+                    <div className="flex items-center">
+                      <span className="bg-emerald-900 border border-emerald-700 px-4 py-2 text-emerald-300 text-lg font-bold rounded">
+                        {setpoints.aiRecommendedSecondaryPumpSpeed}
+                      </span>
+                      <span className="text-emerald-300 ml-2 text-sm">%</span>
+                    </div>
+                  </div>
+                  
+                  {/* AI Recommended Pressure Setpoint */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">AI Recommended Pressure Setpoint</span>
+                    <div className="flex items-center">
+                      <span className="bg-emerald-900 border border-emerald-700 px-4 py-2 text-emerald-300 text-lg font-bold rounded">
+                        {setpoints.aiRecommendedPressureSetpoint}
+                      </span>
+                      <span className="text-emerald-300 ml-2 text-sm">kPa</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -264,7 +288,7 @@ export const PumpsOptimization: React.FC<PumpsOptimizationProps> = ({ pumps }) =
                   onChange={() => setSetpoints(prev => ({ ...prev, controlMode: 'auto' }))}
                   className="mr-2"
                 />
-                <span className="text-gray-300">Auto Optimization</span>
+                <span className="text-gray-300">AI Control</span>
               </label>
               <label className="flex items-center">
                 <input
@@ -273,7 +297,7 @@ export const PumpsOptimization: React.FC<PumpsOptimizationProps> = ({ pumps }) =
                   onChange={() => setSetpoints(prev => ({ ...prev, controlMode: 'manual' }))}
                   className="mr-2"
                 />
-                <span className="text-gray-300">Manual Control</span>
+                <span className="text-gray-300">BMS Control</span>
               </label>
             </div>
           </div>
