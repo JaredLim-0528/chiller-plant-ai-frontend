@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Wind, Thermometer, CheckCircle, XCircle, AlertTriangle, Target, Settings } from 'lucide-react';
+import { Wind, Thermometer, CheckCircle, Target, Settings } from 'lucide-react';
 import type { CoolingTowerData } from '../types';
 
 interface CoolingTowersOptimizationProps {
   coolingTowers: CoolingTowerData[];
 }
 
-export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps> = ({ coolingTowers }) => {
+export const CoolingTowersOptimization: React.FC<CoolingTowersOptimizationProps> = () => {
   // Setpoint state management
   const [setpoints, setSetpoints] = useState({
     currentCondensingWaterReturnTemp: 28.2,     // Display-only current status

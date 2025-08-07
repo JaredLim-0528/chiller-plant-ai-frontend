@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Snowflake, Zap, Gauge, AlertTriangle, CheckCircle, XCircle, Target, Thermometer, Settings, Trophy, Clock, ArrowRight } from 'lucide-react';
-import type { ChillerData, OptimizationMetrics } from '../types';
+import { Snowflake, CheckCircle, Target, Thermometer, Settings, ArrowRight } from 'lucide-react';
+import type { ChillerData } from '../types';
 
 interface ChillersOptimizationProps {
   chillers: ChillerData[];

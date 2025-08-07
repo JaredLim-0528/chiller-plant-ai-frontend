@@ -1,4 +1,3 @@
-import React from 'react';
 import { Brain, Activity, Calendar, Thermometer, Droplets } from 'lucide-react';
 import { CoolingLoadProfile } from './components/CoolingLoadProfile';
 import { ChillersOptimization } from './components/ChillersOptimization';

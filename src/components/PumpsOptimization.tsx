@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, CheckCircle, XCircle, AlertTriangle, Target } from 'lucide-react';
+import { Settings, CheckCircle, Target } from 'lucide-react';
 import type { PumpData } from '../types';
 
 interface PumpsOptimizationProps {
